@@ -129,19 +129,19 @@ public class MazeGraph {
 
         if (pawn == Pawn.ONE) {
             // get the outgoing edges based on the current color of the second node
-            List<Edge> outgoingEdges = mazeState.getPawnOne().getEdgesForColor(mazeState.getPawnTwo().getColor());
+            List<Edge> edgesOfPawnOne = mazeState.getPawnOne().getEdgesForColor(mazeState.getPawnTwo().getColor());
 
             // for every edge create a new state that can be achieved
-            for (Edge edge : outgoingEdges) {
+            for (Edge edge : edgesOfPawnOne) {
                 // we dont allow the first and second node to have the same position
                 if (edge.getDestination().getPositionNr() == mazeState.getPawnTwo().getPositionNr()) continue;
                 neighbourStates.add(new MazeState(edge.getDestination(), mazeState.getPawnTwo()));
             }
         } else {
             // here we do the same but for the second node
-            List<Edge> outgoingEdges = mazeState.getPawnTwo().getEdgesForColor(mazeState.getPawnOne().getColor());
+            List<Edge> edgesOfPawnTwo = mazeState.getPawnTwo().getEdgesForColor(mazeState.getPawnOne().getColor());
 
-            for (Edge edge : outgoingEdges) {
+            for (Edge edge : edgesOfPawnTwo) {
                 if (edge.getDestination().getPositionNr() == mazeState.getPawnOne().getPositionNr()) continue;
                 neighbourStates.add(new MazeState(mazeState.getPawnOne(), edge.getDestination()));
             }
