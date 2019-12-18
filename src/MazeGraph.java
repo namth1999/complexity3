@@ -1,7 +1,7 @@
 import java.util.*;
 
 /**
- * Class representing a graph
+ * This class fully represents the puzzle graph
  */
 public class MazeGraph {
 
@@ -10,12 +10,11 @@ public class MazeGraph {
     private int nrOfStatesCreated;
 
     /**
-     * Find all possible solutions for the current graph based on a specified start state and the node
-     * which is the goal to achieve.
+     * Find all possible solutions for the puzzle based on a specified start state and the goal node
      *
      * @param startState the state to start from
      * @param goalNode   the goal node to reach
-     * @return a list containing results, results is a sequence of states that led to the goal
+     * @return a list containing solutions
      */
     public ArrayList<LinkedList<MazeState>> findSolutions(MazeState startState, Node goalNode) {
         nrOfStatesCreated = 0;
@@ -50,8 +49,8 @@ public class MazeGraph {
      *
      * @param startState   the start state to start from
      * @param visitedState the states that have already been visited
-     * @param successPaths paths of solutions that have already been found
-     * @return a list of states that led to a result or an empty list if no result has been found
+     * @param successPaths paths of successful solutions
+     * @return a solution as a list of state led to goal node
      */
         public LinkedList<MazeState> dfsBacktrack(MazeState startState, Set<MazeState> visitedState, Set<String> successPaths) {
         LinkedList<MazeState> solutionStates;
@@ -119,10 +118,10 @@ public class MazeGraph {
     }
 
     /**
-     * Get all the possible neighbourState based on a provided state
+     * Get all the possible states that the current state can lead to by moving 1 step deeper based on a provided state
      *
-     * @param mazeState the state to get the neighbours for
-     * @param pawn      decide for the first pawn or second pawn
+     * @param mazeState the state to get the leadToStates for
+     * @param pawn      decide to move pawn one or two
      * @return a list of possible states this state can lead to
      */
     public LinkedList<MazeState> getLeadToStates(MazeState mazeState, Pawn pawn) {
@@ -154,10 +153,10 @@ public class MazeGraph {
     }
 
     /**
-     * Checks if a provided state equal the desired state.
+     * Checks if a state is the goal state.
      *
      * @param mazeState the state to check
-     * @return true if the state is the desired state false otherwise
+     * @return true if the state is the goal state false otherwise
      */
     private boolean isGoalState(MazeState mazeState) {
         return mazeState.getPawnOne().getPositionNr() == this.goalNode.getPositionNr() ||
@@ -180,7 +179,7 @@ public class MazeGraph {
     }
 
     /**
-     * Get a list of nodes currently in the graph.
+     * Get a list of nodes currently in the puzzle.
      *
      * @return a list of nodes
      */
@@ -198,7 +197,7 @@ public class MazeGraph {
     }
 
     /**
-     * Set the goal node of the graph.
+     * Set the goal node of the puzzle.
      *
      * @param goalNode the goal node
      */
@@ -207,14 +206,18 @@ public class MazeGraph {
     }
 
     /**
-     * Get the number of states checked.
+     * Get the number of states created.
      *
-     * @return the number of states checked
+     * @return the number of states created
      */
     public int getNrOfStatesCreated() {
         return nrOfStatesCreated;
     }
 
+    /**
+     * Display the graph
+     * @return string contains the visual display of the graph
+     */
     @Override
     public String toString() {
         StringBuilder graphStr = new StringBuilder();
