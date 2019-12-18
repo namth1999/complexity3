@@ -25,9 +25,9 @@ public class MazeGraph {
 
         this.setGoalNode(goalNode);
         boolean completelySolved = false;
-         while (!completelySolved){
+        while (!completelySolved) {
             Set<MazeState> visitedState = new HashSet<>();
-            solution = this.backtrackDeepFirst(startState, visitedState, successPaths);
+            solution = this.dfsBacktrack(startState, visitedState, successPaths);
 
             // a result has been found
             // add the last state path to the forbidden paths
@@ -39,7 +39,8 @@ public class MazeGraph {
             } else {
                 completelySolved = true;
             }
-        };
+        }
+        ;
 
         return solutions;
     }
@@ -47,12 +48,12 @@ public class MazeGraph {
     /**
      * Depth first search the graph and backtrack if a result has been found.
      *
-     * @param startState     the start state to start from
-     * @param visitedState  the states that have already been visited
+     * @param startState   the start state to start from
+     * @param visitedState the states that have already been visited
      * @param successPaths paths of solutions that have already been found
      * @return a list of states that led to a result or an empty list if no result has been found
      */
-    public LinkedList<MazeState> backtrackDeepFirst(MazeState startState, Set<MazeState> visitedState, Set<String> successPaths) {
+        public LinkedList<MazeState> dfsBacktrack(MazeState startState, Set<MazeState> visitedState, Set<String> successPaths) {
         LinkedList<MazeState> solutionStates;
         // the visitedStates prevents that we do not get cycles
         visitedState.add(startState);
@@ -68,49 +69,49 @@ public class MazeGraph {
             solutionStates.add(startState);
             return solutionStates;
 
-        } else {
-            // get all the possible states this first state node can go to
-            // based on the current startState
-            List<MazeState> neighbourStatesPawnOne = this.getNeighbourStates(startState, Pawn.ONE);
-
-            for (MazeState neighbourState : neighbourStatesPawnOne) {
-                // append the startState path to this neighbourState
-                // this way we know how we got to this neighbourState
-                neighbourState.appendPath(startState);
-
-                // if we have not already visited this neighbourState
-                if (!visitedState.contains(neighbourState)) {
-                    // depth first search this neighbourState
-                    solutionStates = this.backtrackDeepFirst(neighbourState, visitedState, successPaths);
-
-                    // if we have reached the goal in these solutionStates
-                    // meaning we came here from the if statement on line 62
-                    // we add this state to the solutionStates and return
-                    // this way the path gets built using recursion
-                    if (goalIsReached(solutionStates)) {
-                        solutionStates.addFirst(startState);
-                        return solutionStates;
-                    }
-                }
-            }
-
-            // here we do the same but then for the second node
-            List<MazeState> neighbourStatesPawnTwo = this.getNeighbourStates(startState, Pawn.TWO);
-
-            for (MazeState neighbourState : neighbourStatesPawnTwo) {
-                neighbourState.appendPath(startState);
-
-                if (!visitedState.contains(neighbourState)) {
-
-                    solutionStates = this.backtrackDeepFirst(neighbourState, visitedState, successPaths);
-                    if (goalIsReached(solutionStates)) {
-                        solutionStates.addFirst(startState);
-                        return solutionStates;
-                    }
-                }
-            }
-
         }
+
+        // get all the possible states this first state node can go to
+        // based on the current startState
+        List<MazeState> movePawnOneLeadToStates = this.getLeadToStates(startState, Pawn.ONE);
+
+        for (int i = 0; i < movePawnOneLeadToStates.size(); i++) {
+            // append the startState path to this neighbourState
+            // this way we know how we got to this neighbourState
+            movePawnOneLeadToStates.get(i).appendPath(startState);
+
+            // if we have not already visited this neighbourState
+            if (!visitedState.contains(movePawnOneLeadToStates.get(i))) {
+                // depth first search this neighbourState
+                solutionStates = this.dfsBacktrack(movePawnOneLeadToStates.get(i), visitedState, successPaths);
+
+                // if we have reached the goal in these solutionStates
+                // meaning we came here from the if statement on line 62
+                // we add this state to the solutionStates and return
+                // this way the path gets built using recursion
+                if (goalIsReached(solutionStates)) {
+                    solutionStates.addFirst(startState);
+                    return solutionStates;
+                }
+            }
+        }
+
+        // here we do the same but then for the second node
+        List<MazeState> movePawnTwoLeadToStates = this.getLeadToStates(startState, Pawn.TWO);
+
+        for (int i = 0; i < movePawnTwoLeadToStates.size(); i++) {
+            movePawnTwoLeadToStates.get(i).appendPath(startState);
+
+            if (!visitedState.contains(movePawnTwoLeadToStates.get(i))) {
+                solutionStates = this.dfsBacktrack(movePawnTwoLeadToStates.get(i), visitedState, successPaths);
+                if (goalIsReached(solutionStates)) {
+                    solutionStates.addFirst(startState);
+                    return solutionStates;
+                }
+            }
+        }
+
+
         // we need to add this because a branch of a path might lead to a valid solution
         // else we would never go back to try this branch
         visitedState.remove(startState);
@@ -120,34 +121,36 @@ public class MazeGraph {
     /**
      * Get all the possible neighbourState based on a provided state
      *
-     * @param mazeState               the state to get the neighbours for
-     * @param pawn decide for the first pawn or second pawn
+     * @param mazeState the state to get the neighbours for
+     * @param pawn      decide for the first pawn or second pawn
      * @return a list of possible states this state can lead to
      */
-    public LinkedList<MazeState> getNeighbourStates(MazeState mazeState, Pawn pawn) {
-        LinkedList<MazeState> neighbourStates = new LinkedList<>();
+    public LinkedList<MazeState> getLeadToStates(MazeState mazeState, Pawn pawn) {
+        LinkedList<MazeState> leadToStates = new LinkedList<>();
 
         if (pawn == Pawn.ONE) {
             // get the outgoing edges based on the current color of the second node
             List<Edge> edgesOfPawnOne = mazeState.getPawnOne().getEdgesForColor(mazeState.getPawnTwo().getColor());
 
             // for every edge create a new state that can be achieved
-            for (Edge edge : edgesOfPawnOne) {
+            for (int i = 0; i < edgesOfPawnOne.size(); i++) {
                 // we dont allow the first and second node to have the same position
-                if (edge.getDestination().getPositionNr() == mazeState.getPawnTwo().getPositionNr()) continue;
-                neighbourStates.add(new MazeState(edge.getDestination(), mazeState.getPawnTwo()));
+                if (edgesOfPawnOne.get(i).getDestination().getPositionNr() == mazeState.getPawnTwo().getPositionNr())
+                    continue;
+                leadToStates.add(new MazeState(edgesOfPawnOne.get(i).getDestination(), mazeState.getPawnTwo()));
             }
         } else {
             // here we do the same but for the second node
             List<Edge> edgesOfPawnTwo = mazeState.getPawnTwo().getEdgesForColor(mazeState.getPawnOne().getColor());
 
-            for (Edge edge : edgesOfPawnTwo) {
-                if (edge.getDestination().getPositionNr() == mazeState.getPawnOne().getPositionNr()) continue;
-                neighbourStates.add(new MazeState(mazeState.getPawnOne(), edge.getDestination()));
+            for (int i = 0; i < edgesOfPawnTwo.size(); i++) {
+                if (edgesOfPawnTwo.get(i).getDestination().getPositionNr() == mazeState.getPawnOne().getPositionNr())
+                    continue;
+                leadToStates.add(new MazeState(mazeState.getPawnOne(), edgesOfPawnTwo.get(i).getDestination()));
             }
         }
 
-        return neighbourStates;
+        return leadToStates;
     }
 
     /**
@@ -192,17 +195,6 @@ public class MazeGraph {
      */
     public void addNode(Node node) {
         this.nodesList.add(node);
-    }
-
-    /**
-     * Create and edge between two nodes.
-     *
-     * @param fromNode the node where this edge originates from
-     * @param toNode   the node where this edge goes to
-     * @param color    the color of the edge
-     */
-    public void addEdge(Node fromNode, Node toNode, Color color) {
-        fromNode.addEdge(new Edge(toNode, color));
     }
 
     /**

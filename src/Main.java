@@ -9,7 +9,7 @@ public class Main {
         solvePuzzle(pawnPuzzleMaze);
     }
 
-    public static void initMaze(MazeGraph graph){
+    public static void initMaze(MazeGraph graph) {
         Node one = new Node(1, Color.PURPLE);
         Node two = new Node(2, Color.BLACK);
         Node three = new Node(3, Color.GREEN);
@@ -34,55 +34,55 @@ public class Main {
         Node twentytwo = new Node(22, Color.BLACK);
         Node twentythree = new Node(23, Color.BLUE);
 
-        one.addEdge(new Edge(four,Color.PURPLE));
-        one.addEdge(new Edge(five,Color.BLACK));
+        one.addEdge(new Edge(four, Color.PURPLE));
+        one.addEdge(new Edge(five, Color.BLACK));
 
-        two.addEdge(new Edge(six,Color.GREEN));
-        two.addEdge(new Edge(twelve,Color.PURPLE));
+        two.addEdge(new Edge(six, Color.GREEN));
+        two.addEdge(new Edge(twelve, Color.PURPLE));
 
-        three.addEdge(new Edge(one,Color.ORANGE));
-        three.addEdge(new Edge(four,Color.ORANGE));
+        three.addEdge(new Edge(one, Color.ORANGE));
+        three.addEdge(new Edge(four, Color.ORANGE));
 
-        four.addEdge(new Edge(thirtheen,Color.BLACK));
+        four.addEdge(new Edge(thirtheen, Color.BLACK));
 
-        five.addEdge(new Edge(nine,Color.ORANGE));
+        five.addEdge(new Edge(nine, Color.ORANGE));
 
-        six.addEdge(new Edge(nine,Color.GREEN));
-        six.addEdge(new Edge(ten,Color.PURPLE));
+        six.addEdge(new Edge(nine, Color.GREEN));
+        six.addEdge(new Edge(ten, Color.PURPLE));
 
-        seven.addEdge(new Edge(two,Color.GREEN));
+        seven.addEdge(new Edge(two, Color.GREEN));
 
-        eight.addEdge(new Edge(three,Color.PURPLE));
+        eight.addEdge(new Edge(three, Color.PURPLE));
 
-        nine.addEdge(new Edge(four,Color.GREEN));
-        nine.addEdge(new Edge(fourteen,Color.BLACK));
+        nine.addEdge(new Edge(four, Color.GREEN));
+        nine.addEdge(new Edge(fourteen, Color.BLACK));
 
-        ten.addEdge(new Edge(fifteen,Color.GREEN));
+        ten.addEdge(new Edge(fifteen, Color.GREEN));
 
-        eleven.addEdge(new Edge(twelve,Color.GREEN));
-        eleven.addEdge(new Edge(ten,Color.PURPLE));
+        eleven.addEdge(new Edge(twelve, Color.GREEN));
+        eleven.addEdge(new Edge(ten, Color.PURPLE));
 
-        twelve.addEdge(new Edge(seven,Color.GREEN));
+        twelve.addEdge(new Edge(seven, Color.GREEN));
 
-        thirtheen.addEdge(new Edge(eighteen,Color.GREEN));
-        thirtheen.addEdge(new Edge(eight,Color.GREEN));
+        thirtheen.addEdge(new Edge(eighteen, Color.GREEN));
+        thirtheen.addEdge(new Edge(eight, Color.GREEN));
 
-        fourteen.addEdge(new Edge(twenty,Color.ORANGE));
-        fourteen.addEdge(new Edge(twentythree,Color.GREEN));
+        fourteen.addEdge(new Edge(twenty, Color.ORANGE));
+        fourteen.addEdge(new Edge(twentythree, Color.GREEN));
 
-        fifteen.addEdge(new Edge(twentytwo,Color.GREEN));
-        fifteen.addEdge(new Edge(twentythree,Color.PURPLE));
+        fifteen.addEdge(new Edge(twentytwo, Color.GREEN));
+        fifteen.addEdge(new Edge(twentythree, Color.PURPLE));
 
-        sixteen.addEdge(new Edge(fifteen,Color.GREEN));
+        sixteen.addEdge(new Edge(fifteen, Color.GREEN));
 
-        seventeen.addEdge(new Edge(eleven,Color.BLACK));
-        seventeen.addEdge(new Edge(twelve,Color.PURPLE));
-        seventeen.addEdge(new Edge(sixteen,Color.BLACK));
+        seventeen.addEdge(new Edge(eleven, Color.BLACK));
+        seventeen.addEdge(new Edge(twelve, Color.PURPLE));
+        seventeen.addEdge(new Edge(sixteen, Color.BLACK));
 
-        eighteen.addEdge(new Edge(nine,Color.ORANGE));
-        eighteen.addEdge(new Edge(twenty,Color.ORANGE));
+        eighteen.addEdge(new Edge(nine, Color.ORANGE));
+        eighteen.addEdge(new Edge(twenty, Color.ORANGE));
 
-        nineteen.addEdge(new Edge(eighteen,Color.GREEN));
+        nineteen.addEdge(new Edge(eighteen, Color.GREEN));
 
         twenty.addEdge(new Edge(twentyone, Color.ORANGE));
 
@@ -116,19 +116,26 @@ public class Main {
         graph.addNode(twentythree);
     }
 
-    public static void displayMaze(MazeGraph graph){
+    public static void displayMaze(MazeGraph graph) {
         System.out.println("PAWN PUZZLE MAZE\n");
         System.out.println(graph.toString());
     }
 
-    public static void solvePuzzle(MazeGraph graph){
-        ArrayList<LinkedList<MazeState>> results =
+    public static void solvePuzzle(MazeGraph graph) {
+        ArrayList<LinkedList<MazeState>> solutions =
                 graph.findSolutions(new MazeState(graph.getNodesList().get(0), graph.getNodesList().get(1)), graph.getNodesList().get(22));
 
-        System.out.println( "NUMBER OF CREATED STATE: " + graph.getNrOfStatesCreated());
-        for (int i=0; i<results.size();i++) {
-            System.out.println("SOLUTION " + (i+1) + ":");
-            System.out.println(results.get(i).getLast().getPath() + results.get(i).getLast().toString());
+        System.out.println("NUMBER OF CREATED STATE: " + graph.getNrOfStatesCreated());
+        for (int i = 0; i < solutions.size(); i++) {
+                System.out.println("SOLUTION " + (i + 1) + ":");
+                String[] solution = (solutions.get(i).getLast().getPath() + solutions.get(i).getLast().toString()).split("]");
+                for (int j=0;j<solution.length;j++){
+                    System.out.print(solution[j] + "]");
+                    if (j%10==0 && j!=0){
+                        System.out.println();
+                    }
+                }
+            System.out.println();
         }
     }
 }
