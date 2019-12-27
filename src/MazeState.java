@@ -5,7 +5,6 @@ public class MazeState {
     private Node pawnOne;
     private Node pawnTwo;
     private String path = "";
-    private MazeState previousState = null;
 
     /**
      * Constructor for a maze state.
@@ -36,14 +35,11 @@ public class MazeState {
 
     /**
      * Append the path to get to this state base on the previous state
-     * @param previousState
+     * @param path
      */
-    public void appendPath(MazeState previousState) {
-        this.previousState = previousState;
+    public void setPath(String path) {
 
-        this.path += previousState.getPath() + "[" +
-                previousState.getPawnOne().getPositionNr() + "," +
-                previousState.getPawnTwo().getPositionNr() + "]";
+        this.path = path;
     }
 
     /**

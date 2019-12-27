@@ -77,7 +77,11 @@ public class MazeGraph {
         for (int i = 0; i < movePawnOneLeadToStates.size(); i++) {
             // append the startState path to this neighbourState
             // this way we know how we got to this neighbourState
-            movePawnOneLeadToStates.get(i).appendPath(startState);
+            String pathToState = startState.getPath() + "[" +
+                    startState.getPawnOne().getPositionNr() + "," +
+                    startState.getPawnTwo().getPositionNr() + "]";
+
+            movePawnOneLeadToStates.get(i).setPath(pathToState);
 
             // if we have not already visited this neighbourState
             if (!visitedState.contains(movePawnOneLeadToStates.get(i))) {
@@ -97,9 +101,12 @@ public class MazeGraph {
 
         // here we do the same but then for the second node
         List<MazeState> movePawnTwoLeadToStates = this.getLeadToStates(startState, Pawn.TWO);
+            String pathToState = startState.getPath() + "[" +
+                    startState.getPawnOne().getPositionNr() + "," +
+                    startState.getPawnTwo().getPositionNr() + "]";
 
         for (int i = 0; i < movePawnTwoLeadToStates.size(); i++) {
-            movePawnTwoLeadToStates.get(i).appendPath(startState);
+            movePawnTwoLeadToStates.get(i).setPath(pathToState);
 
             if (!visitedState.contains(movePawnTwoLeadToStates.get(i))) {
                 solutionStates = this.dfsBacktrack(movePawnTwoLeadToStates.get(i), visitedState, successPaths);
